@@ -39,6 +39,13 @@ defmodule Cmp.PropTest do
         assert Cmp.sort(list) == Enum.sort(list)
         assert Cmp.sort(list, :asc) == Enum.sort(list, :asc)
         assert Cmp.sort(list, :desc) == Enum.sort(list, :desc)
+
+        set = MapSet.new(list)
+        assert Cmp.max(set) == Enum.max(set)
+        assert Cmp.min(set) == Enum.min(set)
+        assert Cmp.sort(set) == Enum.sort(set)
+        assert Cmp.sort(set, :asc) == Enum.sort(set, :asc)
+        assert Cmp.sort(set, :desc) == Enum.sort(set, :desc)
       end
     end
 
@@ -49,6 +56,13 @@ defmodule Cmp.PropTest do
         assert Cmp.sort(list) == Enum.sort(list)
         assert Cmp.sort(list, :asc) == Enum.sort(list, :asc)
         assert Cmp.sort(list, :desc) == Enum.sort(list, :desc)
+
+        set = MapSet.new(list)
+        assert Cmp.max(set) == Enum.max(set)
+        assert Cmp.min(set) == Enum.min(set)
+        assert Cmp.sort(set) == Enum.sort(set)
+        assert Cmp.sort(set, :asc) == Enum.sort(set, :asc)
+        assert Cmp.sort(set, :desc) == Enum.sort(set, :desc)
       end
     end
 
@@ -59,6 +73,13 @@ defmodule Cmp.PropTest do
         assert Cmp.sort(list) == Enum.sort(list)
         assert Cmp.sort(list, :asc) == Enum.sort(list, :asc)
         assert Cmp.sort(list, :desc) == Enum.sort(list, :desc)
+
+        set = MapSet.new(list)
+        assert Cmp.max(set) == Enum.max(set)
+        assert Cmp.min(set) == Enum.min(set)
+        assert Cmp.sort(set) == Enum.sort(set)
+        assert Cmp.sort(set, :asc) == Enum.sort(set, :asc)
+        assert Cmp.sort(set, :desc) == Enum.sort(set, :desc)
       end
     end
 
@@ -69,6 +90,13 @@ defmodule Cmp.PropTest do
         assert Cmp.sort(list) == Enum.sort(list, Date)
         assert Cmp.sort(list, :asc) == Enum.sort(list, Date)
         assert Cmp.sort(list, :desc) == Enum.sort(list, {:desc, Date})
+
+        set = MapSet.new(list)
+        assert Cmp.max(set) == Enum.max(set, Date)
+        assert Cmp.min(set) == Enum.min(set, Date)
+        assert Cmp.sort(set) == Enum.sort(set, Date)
+        assert Cmp.sort(set, :asc) == Enum.sort(set, Date)
+        assert Cmp.sort(set, :desc) == Enum.sort(set, {:desc, Date})
       end
     end
 
@@ -79,6 +107,13 @@ defmodule Cmp.PropTest do
         assert Cmp.sort(list) == Enum.sort(list, Time)
         assert Cmp.sort(list, :asc) == Enum.sort(list, Time)
         assert Cmp.sort(list, :desc) == Enum.sort(list, {:desc, Time})
+
+        set = MapSet.new(list)
+        assert Cmp.max(set) == Enum.max(set, Time)
+        assert Cmp.min(set) == Enum.min(set, Time)
+        assert Cmp.sort(set) == Enum.sort(set, Time)
+        assert Cmp.sort(set, :asc) == Enum.sort(set, Time)
+        assert Cmp.sort(set, :desc) == Enum.sort(set, {:desc, Time})
       end
     end
 
@@ -97,6 +132,13 @@ defmodule Cmp.PropTest do
         assert Cmp.sort(list) == Enum.sort(list, DateTimeTuple)
         assert Cmp.sort(list, :asc) == Enum.sort(list, DateTimeTuple)
         assert Cmp.sort(list, :desc) == Enum.sort(list, {:desc, DateTimeTuple})
+
+        set = MapSet.new(list)
+        assert Cmp.max(set) == Enum.max(set, DateTimeTuple)
+        assert Cmp.min(set) == Enum.min(set, DateTimeTuple)
+        assert Cmp.sort(set) == Enum.sort(set, DateTimeTuple)
+        assert Cmp.sort(set, :asc) == Enum.sort(set, DateTimeTuple)
+        assert Cmp.sort(set, :desc) == Enum.sort(set, {:desc, DateTimeTuple})
       end
     end
   end
