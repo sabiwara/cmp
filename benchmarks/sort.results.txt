@@ -1,0 +1,58 @@
+Operating System: macOS
+CPU Information: Apple M1
+Number of Available Cores: 8
+Available memory: 16 GB
+Elixir 1.14.2
+Erlang 25.0
+
+Benchmark suite executing with the following configuration:
+warmup: 2 s
+time: 2 s
+memory time: 500 ms
+reduction time: 0 ns
+parallel: 1
+inputs: none specified
+Estimated total run time: 36 s
+
+Benchmarking Cmp (dates) ...
+Benchmarking Cmp (list) ...
+Benchmarking Cmp (list, desc) ...
+Benchmarking Cmp (set) ...
+Benchmarking Enum (dates) ...
+Benchmarking Enum (list) ...
+Benchmarking Enum (list, desc) ...
+Benchmarking Enum (set) ...
+
+Name                        ips        average  deviation         median         99th %
+Enum (list)            810.95 K        1.23 μs   ±814.33%        1.08 μs        3.13 μs
+Cmp (list)             718.55 K        1.39 μs   ±744.30%        1.25 μs        2.92 μs
+Cmp (list, desc)       715.64 K        1.40 μs   ±461.16%        1.25 μs        4.29 μs
+Enum (list, desc)      181.22 K        5.52 μs    ±36.90%        5.33 μs        9.67 μs
+Cmp (set)              129.10 K        7.75 μs    ±30.49%        7.38 μs        9.83 μs
+Enum (set)             126.47 K        7.91 μs    ±23.60%        7.75 μs        9.17 μs
+Enum (dates)            42.72 K       23.41 μs     ±6.75%       23.17 μs       24.67 μs
+Cmp (dates)             39.30 K       25.45 μs     ±6.27%       25.21 μs       26.58 μs
+
+Comparison: 
+Enum (list)            810.95 K
+Cmp (list)             718.55 K - 1.13x slower +0.159 μs
+Cmp (list, desc)       715.64 K - 1.13x slower +0.164 μs
+Enum (list, desc)      181.22 K - 4.48x slower +4.29 μs
+Cmp (set)              129.10 K - 6.28x slower +6.51 μs
+Enum (set)             126.47 K - 6.41x slower +6.67 μs
+Enum (dates)            42.72 K - 18.98x slower +22.18 μs
+Cmp (dates)             39.30 K - 20.64x slower +24.21 μs
+
+Memory usage statistics:
+
+Name                 Memory usage
+Enum (list)               7.91 KB
+Cmp (list)                7.91 KB - 1.00x memory usage +0 KB
+Cmp (list, desc)          9.47 KB - 1.20x memory usage +1.56 KB
+Enum (list, desc)         9.59 KB - 1.21x memory usage +1.69 KB
+Cmp (set)                19.84 KB - 2.51x memory usage +11.94 KB
+Enum (set)               19.80 KB - 2.50x memory usage +11.90 KB
+Enum (dates)             49.08 KB - 6.21x memory usage +41.17 KB
+Cmp (dates)              49.08 KB - 6.21x memory usage +41.17 KB
+
+**All measurements for memory usage were the same**

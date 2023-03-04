@@ -1,0 +1,38 @@
+Operating System: macOS
+CPU Information: Apple M1
+Number of Available Cores: 8
+Available memory: 16 GB
+Elixir 1.14.2
+Erlang 25.0
+
+Benchmark suite executing with the following configuration:
+warmup: 2 s
+time: 2 s
+memory time: 0 ns
+reduction time: 0 ns
+parallel: 1
+inputs: none specified
+Estimated total run time: 24 s
+
+Benchmarking Cmp (dates) ...
+Benchmarking Cmp (list) ...
+Benchmarking Cmp (set) ...
+Benchmarking Enum (dates) ...
+Benchmarking Enum (list) ...
+Benchmarking Enum (set) ...
+
+Name                   ips        average  deviation         median         99th %
+Enum (list)       572.55 K        1.75 μs    ±15.77%        1.71 μs        1.92 μs
+Cmp (list)        567.45 K        1.76 μs    ±17.48%        1.75 μs        1.92 μs
+Cmp (set)          45.17 K       22.14 μs    ±13.81%       20.42 μs       27.50 μs
+Enum (set)         44.50 K       22.47 μs    ±13.02%       20.88 μs       26.33 μs
+Enum (dates)       34.88 K       28.67 μs     ±3.90%       28.63 μs       29.08 μs
+Cmp (dates)        25.95 K       38.53 μs    ±12.39%       36.75 μs       50.75 μs
+
+Comparison: 
+Enum (list)       572.55 K
+Cmp (list)        567.45 K - 1.01x slower +0.0157 μs
+Cmp (set)          45.17 K - 12.68x slower +20.39 μs
+Enum (set)         44.50 K - 12.87x slower +20.73 μs
+Enum (dates)       34.88 K - 16.41x slower +26.92 μs
+Cmp (dates)        25.95 K - 22.06x slower +36.79 μs
