@@ -31,89 +31,62 @@ defmodule Cmp.PropTest do
     |> one_of()
   end
 
-  describe "consistency with Enum" do
-    property "list of numbers" do
-      check all(list <- list_of(number(), min_length: 1)) do
-        assert Cmp.max(list) == Enum.max(list)
-        assert Cmp.min(list) == Enum.min(list)
-        assert Cmp.sort(list) == Enum.sort(list)
-        assert Cmp.sort(list, :asc) == Enum.sort(list, :asc)
-        assert Cmp.sort(list, :desc) == Enum.sort(list, :desc)
+  def set_of(base, opts \\ []) do
+    base |> list_of(opts) |> map(&MapSet.new/1)
+  end
 
-        set = MapSet.new(list)
-        assert Cmp.max(set) == Enum.max(set)
-        assert Cmp.min(set) == Enum.min(set)
-        assert Cmp.sort(set) == Enum.sort(set)
-        assert Cmp.sort(set, :asc) == Enum.sort(set, :asc)
-        assert Cmp.sort(set, :desc) == Enum.sort(set, :desc)
+  def enumerable_of(base, opts) do
+    one_of([list_of(base, opts), set_of(base, opts)])
+  end
+
+  describe "consistency with Enum" do
+    property "enumerable of numbers" do
+      check all(values <- enumerable_of(number(), min_length: 1)) do
+        assert Cmp.max(values) == Enum.max(values)
+        assert Cmp.min(values) == Enum.min(values)
+        assert Cmp.sort(values) == Enum.sort(values)
+        assert Cmp.sort(values, :asc) == Enum.sort(values, :asc)
+        assert Cmp.sort(values, :desc) == Enum.sort(values, :desc)
       end
     end
 
     property "list of binaries" do
-      check all(list <- list_of(binary(), min_length: 1)) do
-        assert Cmp.max(list) == Enum.max(list)
-        assert Cmp.min(list) == Enum.min(list)
-        assert Cmp.sort(list) == Enum.sort(list)
-        assert Cmp.sort(list, :asc) == Enum.sort(list, :asc)
-        assert Cmp.sort(list, :desc) == Enum.sort(list, :desc)
-
-        set = MapSet.new(list)
-        assert Cmp.max(set) == Enum.max(set)
-        assert Cmp.min(set) == Enum.min(set)
-        assert Cmp.sort(set) == Enum.sort(set)
-        assert Cmp.sort(set, :asc) == Enum.sort(set, :asc)
-        assert Cmp.sort(set, :desc) == Enum.sort(set, :desc)
+      check all(values <- enumerable_of(number(), min_length: 1)) do
+        assert Cmp.max(values) == Enum.max(values)
+        assert Cmp.min(values) == Enum.min(values)
+        assert Cmp.sort(values) == Enum.sort(values)
+        assert Cmp.sort(values, :asc) == Enum.sort(values, :asc)
+        assert Cmp.sort(values, :desc) == Enum.sort(values, :desc)
       end
     end
 
     property "list of tuples of numbers" do
-      check all(list <- list_of({number(), number()}, min_length: 1)) do
-        assert Cmp.max(list) == Enum.max(list)
-        assert Cmp.min(list) == Enum.min(list)
-        assert Cmp.sort(list) == Enum.sort(list)
-        assert Cmp.sort(list, :asc) == Enum.sort(list, :asc)
-        assert Cmp.sort(list, :desc) == Enum.sort(list, :desc)
-
-        set = MapSet.new(list)
-        assert Cmp.max(set) == Enum.max(set)
-        assert Cmp.min(set) == Enum.min(set)
-        assert Cmp.sort(set) == Enum.sort(set)
-        assert Cmp.sort(set, :asc) == Enum.sort(set, :asc)
-        assert Cmp.sort(set, :desc) == Enum.sort(set, :desc)
+      check all(values <- enumerable_of({number(), number()}, min_length: 1)) do
+        assert Cmp.max(values) == Enum.max(values)
+        assert Cmp.min(values) == Enum.min(values)
+        assert Cmp.sort(values) == Enum.sort(values)
+        assert Cmp.sort(values, :asc) == Enum.sort(values, :asc)
+        assert Cmp.sort(values, :desc) == Enum.sort(values, :desc)
       end
     end
 
     property "list of dates" do
-      check all(list <- list_of(date(), min_length: 1)) do
-        assert Cmp.max(list) == Enum.max(list, Date)
-        assert Cmp.min(list) == Enum.min(list, Date)
-        assert Cmp.sort(list) == Enum.sort(list, Date)
-        assert Cmp.sort(list, :asc) == Enum.sort(list, Date)
-        assert Cmp.sort(list, :desc) == Enum.sort(list, {:desc, Date})
-
-        set = MapSet.new(list)
-        assert Cmp.max(set) == Enum.max(set, Date)
-        assert Cmp.min(set) == Enum.min(set, Date)
-        assert Cmp.sort(set) == Enum.sort(set, Date)
-        assert Cmp.sort(set, :asc) == Enum.sort(set, Date)
-        assert Cmp.sort(set, :desc) == Enum.sort(set, {:desc, Date})
+      check all(values <- enumerable_of(date(), min_length: 1)) do
+        assert Cmp.max(values) == Enum.max(values, Date)
+        assert Cmp.min(values) == Enum.min(values, Date)
+        assert Cmp.sort(values) == Enum.sort(values, Date)
+        assert Cmp.sort(values, :asc) == Enum.sort(values, Date)
+        assert Cmp.sort(values, :desc) == Enum.sort(values, {:desc, Date})
       end
     end
 
     property "list of times" do
-      check all(list <- list_of(time(), min_length: 1)) do
-        assert Cmp.max(list) == Enum.max(list, Time)
-        assert Cmp.min(list) == Enum.min(list, Time)
-        assert Cmp.sort(list) == Enum.sort(list, Time)
-        assert Cmp.sort(list, :asc) == Enum.sort(list, Time)
-        assert Cmp.sort(list, :desc) == Enum.sort(list, {:desc, Time})
-
-        set = MapSet.new(list)
-        assert Cmp.max(set) == Enum.max(set, Time)
-        assert Cmp.min(set) == Enum.min(set, Time)
-        assert Cmp.sort(set) == Enum.sort(set, Time)
-        assert Cmp.sort(set, :asc) == Enum.sort(set, Time)
-        assert Cmp.sort(set, :desc) == Enum.sort(set, {:desc, Time})
+      check all(values <- enumerable_of(time(), min_length: 1)) do
+        assert Cmp.max(values) == Enum.max(values, Time)
+        assert Cmp.min(values) == Enum.min(values, Time)
+        assert Cmp.sort(values) == Enum.sort(values, Time)
+        assert Cmp.sort(values, :asc) == Enum.sort(values, Time)
+        assert Cmp.sort(values, :desc) == Enum.sort(values, {:desc, Time})
       end
     end
 
@@ -126,19 +99,12 @@ defmodule Cmp.PropTest do
     end
 
     property "list of tuples of dates and time" do
-      check all(list <- list_of({date(), time()}, min_length: 1)) do
-        assert Cmp.max(list) == Enum.max(list, DateTimeTuple)
-        assert Cmp.min(list) == Enum.min(list, DateTimeTuple)
-        assert Cmp.sort(list) == Enum.sort(list, DateTimeTuple)
-        assert Cmp.sort(list, :asc) == Enum.sort(list, DateTimeTuple)
-        assert Cmp.sort(list, :desc) == Enum.sort(list, {:desc, DateTimeTuple})
-
-        set = MapSet.new(list)
-        assert Cmp.max(set) == Enum.max(set, DateTimeTuple)
-        assert Cmp.min(set) == Enum.min(set, DateTimeTuple)
-        assert Cmp.sort(set) == Enum.sort(set, DateTimeTuple)
-        assert Cmp.sort(set, :asc) == Enum.sort(set, DateTimeTuple)
-        assert Cmp.sort(set, :desc) == Enum.sort(set, {:desc, DateTimeTuple})
+      check all(values <- enumerable_of({date(), time()}, min_length: 1)) do
+        assert Cmp.max(values) == Enum.max(values, DateTimeTuple)
+        assert Cmp.min(values) == Enum.min(values, DateTimeTuple)
+        assert Cmp.sort(values) == Enum.sort(values, DateTimeTuple)
+        assert Cmp.sort(values, :asc) == Enum.sort(values, DateTimeTuple)
+        assert Cmp.sort(values, :desc) == Enum.sort(values, {:desc, DateTimeTuple})
       end
     end
   end
@@ -183,25 +149,25 @@ defmodule Cmp.PropTest do
   describe "incompatible type guards" do
     property "list with a nil" do
       check all([head | tail] <- types() |> one_of() |> list_of(min_length: 1)) do
-        list = [head] ++ Enum.shuffle([nil] ++ tail)
+        values = [head] ++ Enum.shuffle([nil] ++ tail)
 
-        assert_raise Cmp.TypeError, fn -> Cmp.max(list) end
-        assert_raise Cmp.TypeError, fn -> Cmp.min(list) end
-        assert_raise Cmp.TypeError, fn -> Cmp.sort(list) end
-        assert_raise Cmp.TypeError, fn -> Cmp.sort(list, :asc) end
-        assert_raise Cmp.TypeError, fn -> Cmp.sort(list, :desc) end
+        assert_raise Cmp.TypeError, fn -> Cmp.max(values) end
+        assert_raise Cmp.TypeError, fn -> Cmp.min(values) end
+        assert_raise Cmp.TypeError, fn -> Cmp.sort(values) end
+        assert_raise Cmp.TypeError, fn -> Cmp.sort(values, :asc) end
+        assert_raise Cmp.TypeError, fn -> Cmp.sort(values, :desc) end
       end
     end
 
     property "list with a different struct" do
       check all([head | tail] <- types() |> one_of() |> list_of(min_length: 1)) do
-        list = [head] ++ Enum.shuffle([DateTime.utc_now()] ++ tail)
+        values = [head] ++ Enum.shuffle([DateTime.utc_now()] ++ tail)
 
-        assert_raise Cmp.TypeError, fn -> Cmp.max(list) end
-        assert_raise Cmp.TypeError, fn -> Cmp.min(list) end
-        assert_raise Cmp.TypeError, fn -> Cmp.sort(list) end
-        assert_raise Cmp.TypeError, fn -> Cmp.sort(list, :asc) end
-        assert_raise Cmp.TypeError, fn -> Cmp.sort(list, :desc) end
+        assert_raise Cmp.TypeError, fn -> Cmp.max(values) end
+        assert_raise Cmp.TypeError, fn -> Cmp.min(values) end
+        assert_raise Cmp.TypeError, fn -> Cmp.sort(values) end
+        assert_raise Cmp.TypeError, fn -> Cmp.sort(values, :asc) end
+        assert_raise Cmp.TypeError, fn -> Cmp.sort(values, :desc) end
       end
     end
 
