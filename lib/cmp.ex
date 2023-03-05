@@ -533,9 +533,9 @@ defmodule Cmp do
 
     defp unquote(fun)([head | tail], acc) when unquote(guard)(head) do
       acc =
-        case acc do
-          bigger when bigger >= head -> acc
-          _ -> head
+        case head do
+          new_val when new_val > acc -> new_val
+          _ -> acc
         end
 
       unquote(fun)(tail, acc)
@@ -596,9 +596,9 @@ defmodule Cmp do
 
     defp unquote(fun)([head | tail], acc) when unquote(guard)(head) do
       acc =
-        case acc do
-          bigger when bigger <= head -> acc
-          _ -> head
+        case head do
+          new_val when new_val < acc -> new_val
+          _ -> acc
         end
 
       unquote(fun)(tail, acc)
@@ -606,6 +606,154 @@ defmodule Cmp do
 
     defp unquote(fun)([head | _tail], acc) do
       raise Cmp.TypeError, left: acc, right: head
+    end
+  end
+
+  @doc """
+  Safe equivalent of `Enum.max_by/3`, returning the element of a non-empty
+  enumerable for which `fun` gives the maximum comparable value.
+
+  ## Examples
+
+      iex> Cmp.max_by([%{x: 1}, %{x: 3}, %{x: 2}], & &1.x)
+      %{x: 3}
+
+  Respects semantic comparison:
+
+      iex> Cmp.max_by([%{date: ~D[2020-03-02]}, %{date: ~D[2019-06-06]}], & &1.date)
+      %{date: ~D[2020-03-02]}
+
+  Raises a `Cmp.TypeError` on non-uniform enumerables:
+
+      iex> Cmp.max_by([%{x: 1}, %{x: nil}, %{x: 2}], & &1.x)
+      ** (Cmp.TypeError) Failed to compare incompatible types - left: 1, right: nil
+
+  Raises an `Enum.EmptyError` on empty enumerables:
+
+      iex> Cmp.max_by([], & &1.x)
+      ** (Enum.EmptyError) empty error
+
+  """
+  @spec max_by(Enumerable.t(elem), (elem -> Comparable.t())) :: elem when elem: term()
+  def max_by(enumerable, fun)
+
+  def max_by([head | tail], fun) when is_function(fun, 1) do
+    case fun.(head) do
+      val when is_number(val) ->
+        max_by_list_numbers(tail, head, val, fun)
+
+      val when is_binary(val) ->
+        max_by_list_binaries(tail, head, val, fun)
+
+      val ->
+        module = Comparable.impl_for!(val)
+        max_by_list(tail, head, val, fun, module)
+    end
+  end
+
+  def max_by(enumerable, fun) when is_function(fun, 1) do
+    Enum.max_by(enumerable, fun, __MODULE__)
+  end
+
+  @compile {:inline, max_by_list: 5, max_by_list_numbers: 4, max_by_list_binaries: 4}
+
+  defp max_by_list([], elem, _val, _fun, _module), do: elem
+
+  defp max_by_list([head | tail], elem, val, fun, module) do
+    new_val = fun.(head)
+
+    case module.compare(new_val, val) do
+      :gt -> max_by_list(tail, head, new_val, fun, module)
+      _ -> max_by_list(tail, elem, val, fun, module)
+    end
+  end
+
+  for {fun, guard} <- [
+        max_by_list_numbers: :is_number,
+        max_by_list_binaries: :is_binary
+      ] do
+    defp unquote(fun)([], elem, _val, _fun), do: elem
+
+    defp unquote(fun)([head | tail], elem, val, fun) do
+      case fun.(head) do
+        other when not unquote(guard)(other) -> raise Cmp.TypeError, left: val, right: other
+        new_val when new_val > val -> unquote(fun)(tail, head, new_val, fun)
+        _ -> unquote(fun)(tail, elem, val, fun)
+      end
+    end
+  end
+
+  @doc """
+  Safe equivalent of `Enum.min_by/3`, returning the element of a non-empty
+  enumerable for which `fun` gives the minimum comparable value.
+
+  ## Examples
+
+      iex> Cmp.min_by([%{x: 1}, %{x: 3}, %{x: 2}], & &1.x)
+      %{x: 1}
+
+  Respects semantic comparison:
+
+      iex> Cmp.min_by([%{date: ~D[2020-03-02]}, %{date: ~D[2019-06-06]}], & &1.date)
+      %{date: ~D[2019-06-06]}
+
+  Raises a `Cmp.TypeError` on non-uniform enumerables:
+
+      iex> Cmp.min_by([%{x: 1}, %{x: nil}, %{x: 2}], & &1.x)
+      ** (Cmp.TypeError) Failed to compare incompatible types - left: 1, right: nil
+
+  Raises an `Enum.EmptyError` on empty enumerables:
+
+      iex> Cmp.min_by([], & &1.x)
+      ** (Enum.EmptyError) empty error
+
+  """
+  @spec min_by(Enumerable.t(elem), (elem -> Comparable.t())) :: elem when elem: term()
+  def min_by(enumerable, fun)
+
+  def min_by([head | tail], fun) when is_function(fun, 1) do
+    case fun.(head) do
+      val when is_number(val) ->
+        min_by_list_numbers(tail, head, val, fun)
+
+      val when is_binary(val) ->
+        min_by_list_binaries(tail, head, val, fun)
+
+      val ->
+        module = Comparable.impl_for!(val)
+        min_by_list(tail, head, val, fun, module)
+    end
+  end
+
+  def min_by(enumerable, fun) when is_function(fun, 1) do
+    Enum.min_by(enumerable, fun, __MODULE__)
+  end
+
+  @compile {:inline, min_by_list: 5, min_by_list_numbers: 4, min_by_list_binaries: 4}
+
+  defp min_by_list([], elem, _val, _fun, _module), do: elem
+
+  defp min_by_list([head | tail], elem, val, fun, module) do
+    new_val = fun.(head)
+
+    case module.compare(new_val, val) do
+      :lt -> min_by_list(tail, head, new_val, fun, module)
+      _ -> min_by_list(tail, elem, val, fun, module)
+    end
+  end
+
+  for {fun, guard} <- [
+        min_by_list_numbers: :is_number,
+        min_by_list_binaries: :is_binary
+      ] do
+    defp unquote(fun)([], elem, _val, _fun), do: elem
+
+    defp unquote(fun)([head | tail], elem, val, fun) do
+      case fun.(head) do
+        other when not unquote(guard)(other) -> raise Cmp.TypeError, left: val, right: other
+        new_val when new_val < val -> unquote(fun)(tail, head, new_val, fun)
+        _ -> unquote(fun)(tail, elem, val, fun)
+      end
     end
   end
 end

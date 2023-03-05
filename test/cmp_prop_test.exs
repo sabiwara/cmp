@@ -47,16 +47,24 @@ defmodule Cmp.PropTest do
         assert Cmp.sort(values) == Enum.sort(values)
         assert Cmp.sort(values, :asc) == Enum.sort(values, :asc)
         assert Cmp.sort(values, :desc) == Enum.sort(values, :desc)
+
+        fun = &abs/1
+        assert Cmp.max_by(values, fun) == Enum.max_by(values, fun)
+        assert Cmp.min_by(values, fun) == Enum.min_by(values, fun)
       end
     end
 
     property "list of binaries" do
-      check all(values <- enumerable_of(number(), min_length: 1)) do
+      check all(values <- enumerable_of(binary(), min_length: 1)) do
         assert Cmp.max(values) == Enum.max(values)
         assert Cmp.min(values) == Enum.min(values)
         assert Cmp.sort(values) == Enum.sort(values)
         assert Cmp.sort(values, :asc) == Enum.sort(values, :asc)
         assert Cmp.sort(values, :desc) == Enum.sort(values, :desc)
+
+        fun = &bit_size/1
+        assert Cmp.max_by(values, fun) == Enum.max_by(values, fun)
+        assert Cmp.min_by(values, fun) == Enum.min_by(values, fun)
       end
     end
 
@@ -67,6 +75,10 @@ defmodule Cmp.PropTest do
         assert Cmp.sort(values) == Enum.sort(values)
         assert Cmp.sort(values, :asc) == Enum.sort(values, :asc)
         assert Cmp.sort(values, :desc) == Enum.sort(values, :desc)
+
+        fun = fn {x, y} -> x + y end
+        assert Cmp.max_by(values, fun) == Enum.max_by(values, fun)
+        assert Cmp.min_by(values, fun) == Enum.min_by(values, fun)
       end
     end
 
@@ -77,6 +89,10 @@ defmodule Cmp.PropTest do
         assert Cmp.sort(values) == Enum.sort(values, Date)
         assert Cmp.sort(values, :asc) == Enum.sort(values, Date)
         assert Cmp.sort(values, :desc) == Enum.sort(values, {:desc, Date})
+
+        fun = &Date.beginning_of_week/1
+        assert Cmp.max_by(values, fun) == Enum.max_by(values, fun, Date)
+        assert Cmp.min_by(values, fun) == Enum.min_by(values, fun, Date)
       end
     end
 
@@ -87,6 +103,10 @@ defmodule Cmp.PropTest do
         assert Cmp.sort(values) == Enum.sort(values, Time)
         assert Cmp.sort(values, :asc) == Enum.sort(values, Time)
         assert Cmp.sort(values, :desc) == Enum.sort(values, {:desc, Time})
+
+        fun = &Time.truncate(&1, :second)
+        assert Cmp.max_by(values, fun) == Enum.max_by(values, fun, Time)
+        assert Cmp.min_by(values, fun) == Enum.min_by(values, fun, Time)
       end
     end
 
