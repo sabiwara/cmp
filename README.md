@@ -35,7 +35,7 @@ iex> Enum.sort([~D[2019-01-01], ~D[2020-03-02], ~D[2019-06-06]], Date)
 [~D[2019-01-01], ~D[2019-06-06], ~D[2020-03-02]]
 ```
 
-`Cmp` will do the right right out of the box:
+`Cmp` does the right thing out of the box:
 
 ```elixir
 iex> Cmp.gt?(~D[2020-03-02], ~D[2019-06-06])
@@ -47,7 +47,7 @@ iex> Cmp.sort([~D[2019-01-01], ~D[2020-03-02], ~D[2019-06-06]])
 
 ### 2. Weakly typed
 
-Built-ins will accept any set of operands and happily compare them:
+Built-in comparators accept any set of operands:
 
 ```elixir
 iex> 2 < "1"
