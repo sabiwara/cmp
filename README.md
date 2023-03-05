@@ -78,7 +78,7 @@ iex> Cmp.lte?(2, "1")
 ```elixir
 def deps do
   [
-    {:cmp, "~> 0.1.0"}
+    {:cmp, "~> 0.1.1"}
   ]
 end
 ```
