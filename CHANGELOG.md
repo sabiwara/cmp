@@ -2,6 +2,8 @@
 
 ## Dev
 
+## v0.1.2 (2023-03-17)
+
 - Add `Cmp.sort_by/2`
 - Add `Cmp.min_by/2` and `Cmp.max_by/2`
 
