@@ -610,6 +610,96 @@ defmodule Cmp do
   end
 
   @doc """
+  Safe equivalent of `Enum.sort_by/2`.
+
+  ## Examples
+
+      iex> Cmp.sort_by([%{x: 3}, %{x: 1}, %{x: 2}], & &1.x)
+      [%{x: 1}, %{x: 2}, %{x: 3}]
+
+      iex> Cmp.sort_by([%{x: 3}, %{x: 1}, %{x: 2}], & &1.x, :desc)
+      [%{x: 3}, %{x: 2}, %{x: 1}]
+
+  Respects semantic comparison:
+
+      iex> Cmp.sort_by([%{date: ~D[2020-03-02]}, %{date: ~D[2019-06-06]}], & &1.date)
+      [%{date: ~D[2019-06-06]}, %{date: ~D[2020-03-02]}]
+
+  Raises a `Cmp.TypeError` on non-uniform enumerables:
+
+      iex> Cmp.sort_by([%{x: 3}, %{x: "1"}, %{x: 2}], & &1.x)
+      ** (Cmp.TypeError) Failed to compare incompatible types - left: 3, right: "1"
+
+  """
+  @spec sort_by(Enumerable.t(elem), (elem -> Comparable.t()), :asc | :desc) :: Enumerable.t(elem)
+        when elem: term()
+  def sort_by(enumerable, fun, order \\ :asc)
+      when is_function(fun, 1) and order in [:asc, :desc] do
+    enumerable
+    |> Enum.to_list()
+    |> sort_by_prepare(fun)
+    |> unwrap_sort_by(order)
+  end
+
+  defp sort_by_prepare([], _fun), do: []
+
+  defp sort_by_prepare([head | tail], fun) do
+    case fun.(head) do
+      val when is_number(val) ->
+        sort_by_prepare_numbers(tail, fun, [{val, head}])
+
+      val when is_binary(val) ->
+        sort_by_prepare_binaries(tail, fun, [{val, head}])
+
+      val ->
+        module = Comparable.impl_for!(val)
+        mapped = [{val, head} | Enum.map(tail, &{fun.(&1), &1})]
+        :lists.sort(fn {left, _}, {right, _} -> module.compare(left, right) != :gt end, mapped)
+    end
+  end
+
+  @compile {:inline, sort_by_prepare_numbers: 3}
+  @compile {:inline, sort_by_prepare_binaries: 3}
+  @compile {:inline, unwrap_sort_by_desc: 2}
+
+  defp sort_by_prepare_numbers([], _fun, acc), do: :lists.keysort(1, acc)
+
+  defp sort_by_prepare_numbers([head | tail], fun, acc) do
+    case fun.(head) do
+      val when is_number(val) ->
+        sort_by_prepare_numbers(tail, fun, [{val, head} | acc])
+
+      other ->
+        [{left, _} | _] = acc
+        raise Cmp.TypeError, left: left, right: other
+    end
+  end
+
+  defp sort_by_prepare_binaries([], _fun, acc), do: :lists.keysort(1, acc)
+
+  defp sort_by_prepare_binaries([head | tail], fun, acc) do
+    case fun.(head) do
+      val when is_binary(val) ->
+        sort_by_prepare_binaries(tail, fun, [{val, head} | acc])
+
+      other ->
+        [{left, _} | _] = acc
+        raise Cmp.TypeError, left: left, right: other
+    end
+  end
+
+  defp unwrap_sort_by(list, :asc), do: unwrap_sort_by_asc(list)
+  defp unwrap_sort_by(list, :desc), do: unwrap_sort_by_desc(list, [])
+
+  defp unwrap_sort_by_asc([]), do: []
+  defp unwrap_sort_by_asc([{_val, elem} | tail]), do: [elem | unwrap_sort_by_asc(tail)]
+
+  defp unwrap_sort_by_desc([], acc), do: acc
+
+  defp unwrap_sort_by_desc([{_val, elem} | tail], acc),
+    do: unwrap_sort_by_desc(tail, [elem | acc])
+
+  @doc """
   Safe equivalent of `Enum.max_by/3`, returning the element of a non-empty
   enumerable for which `fun` gives the maximum comparable value.
 

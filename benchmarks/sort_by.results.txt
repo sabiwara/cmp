@@ -1,0 +1,50 @@
+Operating System: macOS
+CPU Information: Apple M1
+Number of Available Cores: 8
+Available memory: 16 GB
+Elixir 1.14.2
+Erlang 25.0
+
+Benchmark suite executing with the following configuration:
+warmup: 2 s
+time: 2 s
+memory time: 500 ms
+reduction time: 0 ns
+parallel: 1
+inputs: none specified
+Estimated total run time: 27 s
+
+Benchmarking Cmp (dates) ...
+Benchmarking Cmp (list) ...
+Benchmarking Cmp (set) ...
+Benchmarking Enum (dates) ...
+Benchmarking Enum (list) ...
+Benchmarking Enum (set) ...
+
+Name                   ips        average  deviation         median         99th %
+Cmp (list)         17.33 K       57.70 μs    ±17.84%       55.92 μs      100.21 μs
+Enum (list)        14.76 K       67.73 μs    ±39.34%       62.96 μs      124.79 μs
+Cmp (set)          13.07 K       76.49 μs    ±17.39%       72.42 μs      126.95 μs
+Enum (set)         12.98 K       77.05 μs    ±12.57%       77.42 μs      118.93 μs
+Enum (dates)        2.16 K      463.43 μs     ±8.29%      455.29 μs      658.61 μs
+Cmp (dates)         1.75 K      572.11 μs     ±7.89%      564.46 μs      764.68 μs
+
+Comparison: 
+Cmp (list)         17.33 K
+Enum (list)        14.76 K - 1.17x slower +10.03 μs
+Cmp (set)          13.07 K - 1.33x slower +18.79 μs
+Enum (set)         12.98 K - 1.34x slower +19.35 μs
+Enum (dates)        2.16 K - 8.03x slower +405.73 μs
+Cmp (dates)         1.75 K - 9.92x slower +514.41 μs
+
+Memory usage statistics:
+
+Name            Memory usage
+Cmp (list)         169.06 KB
+Enum (list)        169.01 KB - 1.00x memory usage -0.05469 KB
+Cmp (set)          221.84 KB - 1.31x memory usage +52.78 KB
+Enum (set)         196.64 KB - 1.16x memory usage +27.58 KB
+Enum (dates)       784.30 KB - 4.64x memory usage +615.23 KB
+Cmp (dates)        784.25 KB - 4.64x memory usage +615.19 KB
+
+**All measurements for memory usage were the same**

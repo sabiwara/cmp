@@ -51,6 +51,12 @@ defmodule Cmp.PropTest do
         fun = &abs/1
         assert Cmp.max_by(values, fun) == Enum.max_by(values, fun)
         assert Cmp.min_by(values, fun) == Enum.min_by(values, fun)
+
+        # unfortunately, Enum.sort_by is inconsistent in how it is handling draws
+        # order might differ for non-bijection funs, but still semantically correct
+        fun = & &1
+        assert Cmp.sort_by(values, fun) == Enum.sort_by(values, fun)
+        assert Cmp.sort_by(values, fun, :desc) == Enum.sort_by(values, fun, :desc)
       end
     end
 
@@ -65,6 +71,10 @@ defmodule Cmp.PropTest do
         fun = &bit_size/1
         assert Cmp.max_by(values, fun) == Enum.max_by(values, fun)
         assert Cmp.min_by(values, fun) == Enum.min_by(values, fun)
+
+        fun = & &1
+        assert Cmp.sort_by(values, fun) == Enum.sort_by(values, fun)
+        assert Cmp.sort_by(values, fun, :desc) == Enum.sort_by(values, fun, :desc)
       end
     end
 
@@ -79,6 +89,10 @@ defmodule Cmp.PropTest do
         fun = fn {x, y} -> x + y end
         assert Cmp.max_by(values, fun) == Enum.max_by(values, fun)
         assert Cmp.min_by(values, fun) == Enum.min_by(values, fun)
+
+        fun = & &1
+        assert Cmp.sort_by(values, fun) == Enum.sort_by(values, fun)
+        assert Cmp.sort_by(values, fun, :desc) == Enum.sort_by(values, fun, :desc)
       end
     end
 
@@ -93,6 +107,10 @@ defmodule Cmp.PropTest do
         fun = &Date.beginning_of_week/1
         assert Cmp.max_by(values, fun) == Enum.max_by(values, fun, Date)
         assert Cmp.min_by(values, fun) == Enum.min_by(values, fun, Date)
+
+        fun = & &1
+        assert Cmp.sort_by(values, fun) == Enum.sort_by(values, fun, Date)
+        assert Cmp.sort_by(values, fun, :desc) == Enum.sort_by(values, fun, {:desc, Date})
       end
     end
 
@@ -107,6 +125,10 @@ defmodule Cmp.PropTest do
         fun = &Time.truncate(&1, :second)
         assert Cmp.max_by(values, fun) == Enum.max_by(values, fun, Time)
         assert Cmp.min_by(values, fun) == Enum.min_by(values, fun, Time)
+
+        fun = & &1
+        assert Cmp.sort_by(values, fun) == Enum.sort_by(values, fun, Time)
+        assert Cmp.sort_by(values, fun, :desc) == Enum.sort_by(values, fun, {:desc, Time})
       end
     end
 
@@ -176,6 +198,13 @@ defmodule Cmp.PropTest do
         assert_raise Cmp.TypeError, fn -> Cmp.sort(values) end
         assert_raise Cmp.TypeError, fn -> Cmp.sort(values, :asc) end
         assert_raise Cmp.TypeError, fn -> Cmp.sort(values, :desc) end
+
+        fun = & &1
+        assert_raise Cmp.TypeError, fn -> Cmp.max_by(values, fun) end
+        assert_raise Cmp.TypeError, fn -> Cmp.min_by(values, fun) end
+        assert_raise Cmp.TypeError, fn -> Cmp.sort_by(values, fun) end
+        assert_raise Cmp.TypeError, fn -> Cmp.sort_by(values, fun, :asc) end
+        assert_raise Cmp.TypeError, fn -> Cmp.sort_by(values, fun, :desc) end
       end
     end
 
@@ -188,6 +217,13 @@ defmodule Cmp.PropTest do
         assert_raise Cmp.TypeError, fn -> Cmp.sort(values) end
         assert_raise Cmp.TypeError, fn -> Cmp.sort(values, :asc) end
         assert_raise Cmp.TypeError, fn -> Cmp.sort(values, :desc) end
+
+        fun = & &1
+        assert_raise Cmp.TypeError, fn -> Cmp.max_by(values, fun) end
+        assert_raise Cmp.TypeError, fn -> Cmp.min_by(values, fun) end
+        assert_raise Cmp.TypeError, fn -> Cmp.sort_by(values, fun) end
+        assert_raise Cmp.TypeError, fn -> Cmp.sort_by(values, fun, :asc) end
+        assert_raise Cmp.TypeError, fn -> Cmp.sort_by(values, fun, :desc) end
       end
     end
 
