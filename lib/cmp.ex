@@ -662,8 +662,8 @@ defmodule Cmp do
   defp max_by_list([head | tail], elem, val, fun, module) do
     new_val = fun.(head)
 
-    case module.compare(new_val, val) do
-      :gt -> max_by_list(tail, head, new_val, fun, module)
+    case module.compare(val, new_val) do
+      :lt -> max_by_list(tail, head, new_val, fun, module)
       _ -> max_by_list(tail, elem, val, fun, module)
     end
   end
@@ -736,8 +736,8 @@ defmodule Cmp do
   defp min_by_list([head | tail], elem, val, fun, module) do
     new_val = fun.(head)
 
-    case module.compare(new_val, val) do
-      :lt -> min_by_list(tail, head, new_val, fun, module)
+    case module.compare(val, new_val) do
+      :gt -> min_by_list(tail, head, new_val, fun, module)
       _ -> min_by_list(tail, elem, val, fun, module)
     end
   end
