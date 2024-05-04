@@ -2,6 +2,8 @@
 
 ## Dev
 
+- Update `:ex_doc`
+
 ## v0.1.2 (2023-03-17)
 
 - Add `Cmp.sort_by/2`
