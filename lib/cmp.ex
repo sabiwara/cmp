@@ -110,6 +110,11 @@ defmodule Cmp do
   - Easily extensible through the `Cmp.Comparable` protocol
   - Robust and well-tested (both unit and property-based)
 
+  Supporting comparisons between non-homogeneous types such as mixed `Decimal` and
+  built-in numbers for instance is a non-goal. This limitation is a necessary
+  trade-off in order to ensure the points above. Use the `Decimal` library
+  directly if you need this.
+
   ## Limitations
 
   - `Cmp` comparators cannot be used in guards.

@@ -94,6 +94,11 @@ The documentation can be found at
 - Easily extensible through the `Cmp.Comparable` protocol
 - Robust and well-tested (both unit and property-based)
 
+Supporting comparisons between non-homogeneous types such as mixed `Decimal` and
+built-in numbers for instance is a non-goal. This limitation is a necessary
+trade-off in order to ensure the points above. Use the `Decimal` library
+directly if you need this.
+
 ## Copyright and License
 
 Cmp is licensed under the [MIT License](LICENSE.md).
