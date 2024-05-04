@@ -95,9 +95,9 @@ defmodule Cmp do
   `Decimal` support can prevent nasty bugs too:
 
       iex> max(Decimal.new(2), Decimal.from_float(1.0))
-      #Decimal<1.0>
+      Decimal.new("1.0")
       iex> Cmp.max(Decimal.new(2), Decimal.from_float(1.0))
-      #Decimal<2>
+      Decimal.new(2)
 
   See the `Cmp.Comparable` documentation to implement the protocol for other existing
   or new structs.
