@@ -39,13 +39,13 @@ defmodule Cmp do
 
   Built-in comparators accept any set of operands:
 
-      iex> 2 < "1"
+      2 < "1"
       true
 
-      iex> 0 < true
+      0 < true
       true
 
-      iex> false < nil
+      false < nil
       true
 
   `Cmp` will only compare compatible elements or raise a `Cmp.TypeError`:
