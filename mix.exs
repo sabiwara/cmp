@@ -43,7 +43,7 @@ defmodule Cmp.MixProject do
       {:benchee, "~> 1.1", only: :bench, runtime: false},
       # CI
       {:dialyxir, "~> 1.0", only: :test, runtime: false},
-      {:stream_data, "~> 0.5.0", only: :test}
+      {:stream_data, "~> 1.0", only: :test}
     ]
   end
 
